@@ -1,0 +1,7 @@
+depsversion = "0.0.0"
+name = "piot/conclave-room-client-c"
+version = "0.0.0"
+
+[[dependencies]]
+name = "piot/conclave-room-serialize-c"
+version = "*"
