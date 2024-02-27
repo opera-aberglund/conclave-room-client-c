@@ -16,8 +16,16 @@ typedef struct ClvRoomClient {
     ClvSerializeConnectedToOwnerState lastConnectionStateToLeader;
 } ClvRoomClient;
 
+typedef enum ClvRoomClientPingResult {
+    ClvRoomClientPingResultNothing,
+    ClvRoomClientPingResultLeaderChanged,
+    ClvRoomClientPingResultSameLeaderButTermChanged
+} ClvRoomClientPingResult;
+
 void clvRoomClientInit(ClvRoomClient* self, Clog log);
-void clvRoomClientOnPing(ClvRoomClient* self, ClvSerializePingResponse pingResponse);
-ClvSerializePing clvRoomClientPing(ClvRoomClient* self, ClvSerializeKnowledge knowledge, ClvSerializeConnectedToOwnerState leaderConnectionState);
+ClvRoomClientPingResult clvRoomClientOnPing(
+    ClvRoomClient* self, ClvSerializePingResponse pingResponse);
+ClvSerializePing clvRoomClientPing(ClvRoomClient* self, ClvSerializeKnowledge knowledge,
+    ClvSerializeConnectedToOwnerState leaderConnectionState);
 
 #endif

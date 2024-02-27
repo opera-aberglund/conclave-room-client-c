@@ -6,18 +6,35 @@ void clvRoomClientInit(ClvRoomClient* self, Clog log)
     self->leader = 0xff;
 }
 
-void clvRoomClientOnPing(ClvRoomClient* self, ClvSerializePingResponse pingResponse)
+ClvRoomClientPingResult clvRoomClientOnPing(
+    ClvRoomClient* self, ClvSerializePingResponse pingResponse)
 {
-    self->leader = pingResponse.roomInfo.indexOfOwner;
-    if (pingResponse.term != self->term) {
-        CLOG_C_INFO(& "new term detected: %d", pingResponse.term);
+    ClvRoomClientPingResult result = ClvRoomClientPingResultNothing;
+
+    if (pingResponse.term == self->term) {
+        return result;
     }
+
+    CLOG_C_INFO(&self->log, "new term detected: %d", pingResponse.term);
+    if (pingResponse.roomInfo.indexOfOwner != self->leader) {
+        CLOG_C_INFO(&self->log, "leader changed to %d", pingResponse.roomInfo.indexOfOwner);
+        result = ClvRoomClientPingResultLeaderChanged;
+    } else {
+        CLOG_C_INFO(
+            &self->log, "but term changed, but leader is not changed (should rarely/ever happen)");
+        result = ClvRoomClientPingResultSameLeaderButTermChanged;
+    }
+
+    self->leader = pingResponse.roomInfo.indexOfOwner;
     self->term = pingResponse.term;
+
+    return result;
 }
 
-ClvSerializePing clvRoomClientPing(ClvRoomClient* self, ClvSerializeKnowledge knowledge, ClvSerializeConnectedToOwnerState connectionToLeader)
+ClvSerializePing clvRoomClientPing(ClvRoomClient* self, ClvSerializeKnowledge knowledge,
+    ClvSerializeConnectedToOwnerState connectionToLeader)
 {
-    CLOG_C_INFO(& "ping %d", self->leader);
+    CLOG_C_INFO(&"ping %d", self->leader);
     self->lastConnectionStateToLeader = connectionToLeader;
     self->lastKnowledge = knowledge;
 

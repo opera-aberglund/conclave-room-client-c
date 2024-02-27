@@ -1,8 +1,8 @@
 #ifndef CONCLAVE_ROOM_CLIENT_SERIALIZE_H
 #define CONCLAVE_ROOM_CLIENT_SERIALIZE_H
 
-#include <conclave-room-serialize/serialize.h>
 #include <conclave-room-client/client.h>
+#include <conclave-room-serialize/serialize.h>
 
 #include <clog/clog.h>
 #include <stdbool.h>
@@ -16,7 +16,11 @@ typedef struct ClvRoomClientSerialize {
 } ClvRoomClientSerialize;
 
 void clvSerializeRoomClientInit(ClvRoomClientSerialize* self, Clog log);
-void clvSerializeRoomClientOnPing(ClvRoomClientSerialize* self, struct FldInStream* inStream);
-void clvSerializeRoomClientSendPing(ClvRoomClientSerialize* self, ClvSerializeKnowledge knowledge, ClvSerializeConnectedToOwnerState leaderConnectionState, struct FldOutStream* outStream);
+int clvSerializeRoomClientRead(ClvRoomClientSerialize* self, struct FldInStream* inStream);
+
+ClvRoomClientPingResult clvSerializeRoomClientOnPing(
+    ClvRoomClientSerialize* self, struct FldInStream* inStream);
+void clvSerializeRoomClientSendPing(ClvRoomClientSerialize* self, ClvSerializeKnowledge knowledge,
+    ClvSerializeConnectedToOwnerState leaderConnectionState, struct FldOutStream* outStream);
 
 #endif
