@@ -9,14 +9,19 @@ void clvSerializeRoomClientInit(ClvRoomClientSerialize* self, Clog log)
     clvRoomClientInit(&self->state, log);
 }
 
-ClvRoomClientPingResult clvSerializeRoomClientOnPing(
-    ClvRoomClientSerialize* self, struct FldInStream* inStream)
+int clvSerializeRoomClientOnPing(
+    ClvRoomClientSerialize* self, struct FldInStream* inStream, ClvRoomClientPingResult* result)
 {
     ClvSerializePingResponse pingResponse;
 
-    clvRoomSerializeClientInPingResponse(inStream, &pingResponse);
+    int error = clvRoomSerializeClientInPingResponse(inStream, &pingResponse);
+    if (error != 0) {
+        return error;
+    }
 
-    return clvRoomClientOnPing(&self->state, pingResponse);
+    *result = clvRoomClientOnPing(&self->state, pingResponse);
+
+    return 0;
 }
 
 void clvSerializeRoomClientSendPing(ClvRoomClientSerialize* self, ClvSerializeKnowledge knowledge,
@@ -26,16 +31,27 @@ void clvSerializeRoomClientSendPing(ClvRoomClientSerialize* self, ClvSerializeKn
     clvRoomSerializeClientOutPing(outStream, &ping);
 }
 
-int clvSerializeRoomClientRead(ClvRoomClientSerialize* self, struct FldInStream* inStream)
+int clvSerializeRoomClientRead(
+    ClvRoomClientSerialize* self, struct FldInStream* inStream, ClvRoomClientReadResult* result)
 {
     uint8_t cmd;
-    fldInStreamReadUInt8(inStream, &cmd);
+    int error = fldInStreamReadUInt8(inStream, &cmd);
+    if (error != 0) {
+        result->type = ClvRoomClientReadResultTypeError;
+        return error;
+    }
 
     switch (cmd) {
     case clvRoomSerializeCmdPing:
-        clvSerializeRoomClientOnPing(self, inStream);
+        error = clvSerializeRoomClientOnPing(self, inStream, &result->pingResult);
+        if (error != 0) {
+            result->type = ClvRoomClientReadResultTypeError;
+            return error;
+        }
+        result->type = ClvRoomClientReadResultTypePing;
         return 0;
     default:
+        result->type = ClvRoomClientReadResultTypeError;
         return -4;
     }
 }

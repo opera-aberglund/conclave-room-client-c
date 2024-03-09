@@ -15,11 +15,25 @@ typedef struct ClvRoomClientSerialize {
     ClvRoomClient state;
 } ClvRoomClientSerialize;
 
-void clvSerializeRoomClientInit(ClvRoomClientSerialize* self, Clog log);
-int clvSerializeRoomClientRead(ClvRoomClientSerialize* self, struct FldInStream* inStream);
+typedef enum ClvRoomClientReadResultType {
+    ClvRoomClientReadResultTypeNothing,
+    ClvRoomClientReadResultTypeError,
+    ClvRoomClientReadResultTypePing,
+} ClvRoomClientReadResultType;
 
-ClvRoomClientPingResult clvSerializeRoomClientOnPing(
-    ClvRoomClientSerialize* self, struct FldInStream* inStream);
+typedef struct ClvRoomClientReadResult {
+    ClvRoomClientReadResultType type;
+    ClvRoomClientPingResult pingResult;
+} ClvRoomClientReadResult;
+
+void clvSerializeRoomClientInit(ClvRoomClientSerialize* self, Clog log);
+
+int clvSerializeRoomClientRead(
+    ClvRoomClientSerialize* self, struct FldInStream* inStream, ClvRoomClientReadResult* result);
+
+int clvSerializeRoomClientOnPing(
+    ClvRoomClientSerialize* self, struct FldInStream* inStream, ClvRoomClientPingResult* result);
+
 void clvSerializeRoomClientSendPing(ClvRoomClientSerialize* self, ClvSerializeKnowledge knowledge,
     ClvSerializeConnectedToOwnerState leaderConnectionState, struct FldOutStream* outStream);
 

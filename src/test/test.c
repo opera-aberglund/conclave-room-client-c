@@ -25,8 +25,11 @@ UTEST(RoomClientSerialize, verify)
     log.constantPrefix = "test";
     clvSerializeRoomClientInit(&clientSerialize, log);
 
-    int error = clvSerializeRoomClientRead(&clientSerialize, &inStream);
+    ClvRoomClientReadResult result;
+    int error = clvSerializeRoomClientRead(&clientSerialize, &inStream, &result);
     ASSERT_EQ(0, error);
+    ASSERT_EQ(ClvRoomClientReadResultTypePing, result.type);
+    ASSERT_EQ(ClvRoomClientPingResultSameLeaderButTermChanged, result.pingResult);
 
     ASSERT_EQ(0x4A, clientSerialize.state.term);
     //ASSERT_EQ(0, clientSerialize.state..memberCount);

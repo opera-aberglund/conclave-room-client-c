@@ -1,7 +1,6 @@
 #ifndef CONCLAVE_ROOM_CLIENT_H
 #define CONCLAVE_ROOM_CLIENT_H
 
-#include <conclave-room-serialize/serialize.h>
 #include <conclave-room-serialize/types.h>
 
 #include <clog/clog.h>
