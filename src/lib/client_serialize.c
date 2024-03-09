@@ -24,11 +24,11 @@ int clvSerializeRoomClientOnPing(
     return 0;
 }
 
-void clvSerializeRoomClientSendPing(ClvRoomClientSerialize* self, ClvSerializeKnowledge knowledge,
+int clvSerializeRoomClientSendPing(ClvRoomClientSerialize* self, ClvSerializeKnowledge knowledge,
     ClvSerializeConnectedToOwnerState leaderConnectionState, struct FldOutStream* outStream)
 {
     ClvSerializePing ping = clvRoomClientPing(&self->state, knowledge, leaderConnectionState);
-    clvRoomSerializeClientOutPing(outStream, &ping);
+    return clvRoomSerializeClientOutPing(outStream, &ping);
 }
 
 int clvSerializeRoomClientRead(

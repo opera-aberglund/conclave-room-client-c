@@ -34,7 +34,7 @@ int clvSerializeRoomClientRead(
 int clvSerializeRoomClientOnPing(
     ClvRoomClientSerialize* self, struct FldInStream* inStream, ClvRoomClientPingResult* result);
 
-void clvSerializeRoomClientSendPing(ClvRoomClientSerialize* self, ClvSerializeKnowledge knowledge,
+int clvSerializeRoomClientSendPing(ClvRoomClientSerialize* self, ClvSerializeKnowledge knowledge,
     ClvSerializeConnectedToOwnerState leaderConnectionState, struct FldOutStream* outStream);
 
 #endif
