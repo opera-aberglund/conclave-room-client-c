@@ -34,7 +34,7 @@ ClvRoomClientPingResult clvRoomClientOnPing(
 ClvSerializePing clvRoomClientPing(ClvRoomClient* self, ClvSerializeKnowledge knowledge,
     ClvSerializeConnectedToOwnerState connectionToLeader)
 {
-    CLOG_C_INFO(&self->log, "ping %d", self->leader)
+    //CLOG_C_INFO(&self->log, "ping %d", self->leader)
     self->lastConnectionStateToLeader = connectionToLeader;
     self->lastKnowledge = knowledge;
 
