@@ -4,6 +4,7 @@ void clvRoomClientInit(ClvRoomClient* self, Clog log)
 {
     self->log = log;
     self->leader = 0xff;
+    self->term = 0xffff;
 }
 
 ClvRoomClientPingResult clvRoomClientOnPing(
