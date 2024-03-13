@@ -42,7 +42,7 @@ int clvSerializeRoomClientRead(
     }
 
     switch (cmd) {
-    case clvRoomSerializeCmdPing:
+    case clvRoomSerializeCmdPingResponse:
         error = clvSerializeRoomClientOnPing(self, inStream, &result->pingResult);
         if (error != 0) {
             result->type = ClvRoomClientReadResultTypeError;
