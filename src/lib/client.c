@@ -16,9 +16,18 @@ ClvRoomClientPingResult clvRoomClientOnPing(
         return result;
     }
 
-    CLOG_C_INFO(&self->log, "new term detected: %d", pingResponse.term)
+    if (self->term == 0) {
+        CLOG_C_INFO(&self->log, "first time term: %d", pingResponse.term)
+    } else {
+        CLOG_C_INFO(&self->log, "new term detected: %d", pingResponse.term)
+    }
+
     if (pingResponse.roomInfo.indexOfOwner != self->leader) {
-        CLOG_C_INFO(&self->log, "leader changed to %d", pingResponse.roomInfo.indexOfOwner)
+        if (self->leader == 0xff) {
+            CLOG_C_INFO(&self->log, "first time leader is %d", pingResponse.roomInfo.indexOfOwner)
+        } else {
+            CLOG_C_INFO(&self->log, "leader changed to %d", pingResponse.roomInfo.indexOfOwner)
+        }
         result = ClvRoomClientPingResultLeaderChanged;
     } else {
         CLOG_C_INFO(
